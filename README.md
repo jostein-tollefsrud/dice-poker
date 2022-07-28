@@ -1,34 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dice Poker
 
-## Getting Started
+Vår designer Rune er veldig glad i spillet Witcher og deres mini-spill terningpoker. Vi teknikere pleide å spille dette live med ham i lunsjpausen den tiden vi kunne samles på kontoret. Etter så lang tid på hjemmekontoret begynner vår sosiale designer Rune å bli ekstremt lei og har gitt oss i teknisk avdeling oppgaven med å lage en elektronisk variant i stedet.
 
-First, run the development server:
+Pokerterning er et terningspill som er oddsbasert og verdien av terningkast blir bedømt i henhold til pokerregler. Spillerens terningkast er åpne for alle. Pokerdelen refererer bare til verdivurderingen av hånden. Spillet ligner på yatzy, men poker høres litt mer kult ut. Spill og konkurranse er også involvert, dette er noe vi liker på Eiendomsverdi.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Rangering
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Ingenting**: ingen terning treffer.
+- **Ett Par**: To terninger med samme verdi.
+- **To par**: To terningpar med samme verdi.
+- **Tre like**: Tre terninger viser samme verdi.
+- **Liten straight**: Stige med 5 som høyeste verdi.
+- **Stor straight**: Stige med 6 som høyeste verdi.
+- **Fullt hus**: Tre med en verdi, Par med en annen.
+- **Fire like**: Fire terninger viser samme verdi.
+- **Fem like**: Fem terninger viser samme verdi.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Verdien på hånden for like typer er satt med høyeste terning.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+eks:
+**To par**: Maksimum par, nest høyeste par, deretter høyest uovertruffen verdi.
+**Fullt hus**: Høyeste trippel, deretter høyeste par.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Spillflyt
 
-## Learn More
+Begge spillerne starter med 30 evCoins hver.
 
-To learn more about Next.js, take a look at the following resources:
+En runde foregår som følger:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Ante er 1 evCoin per runde.
+- Begge spillerne kaster 5 terninger.
+- Spiller 1 starter deretter budrunden og kan syne, høyne eller folde.
+- Spiller 2 kan deretter syne, høyne eller folde.
+- Hvis det ikke er noen økning, går spillet til neste fase.
+- Hvis spiller 2 høyner potten, går budrunden til spiller 1 igjen.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+I neste fase bytter spillerne på hvilke terninger de skal kaste om, og når begge spillerne har gjort det, avgjøres runden og potten går til vinneren.
 
-## Deploy on Vercel
+Når runden er avgjort, endres rollene og spiller 2 starter budrunden.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Spillet varer til noen går tom for evCoin eller lunsjpausen er over.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Flytskjema
+
+![flytskjema](github-img/flytskjema.png)

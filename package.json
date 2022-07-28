@@ -2,6 +2,7 @@
   "name": "dice-poker",
   "version": "0.1.0",
   "private": true,
+  "author": "Jostein Ø. Tollefsrud",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
