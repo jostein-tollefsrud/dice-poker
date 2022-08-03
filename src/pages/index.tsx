@@ -1,100 +1,87 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import Player from '../lib/Player';
-
-const INITIAL_DICES = [
-  {
-    id: 0,
-    value: 0,
-    checked: false,
-  },
-  {
-    id: 1,
-    value: 0,
-    checked: false,
-  },
-  {
-    id: 2,
-    value: 0,
-    checked: false,
-  },
-  {
-    id: 3,
-    value: 0,
-    checked: false,
-  },
-  {
-    id: 4,
-    value: 0,
-    checked: false,
-  },
-];
+import Player from '../components/Player';
 
 const Home: NextPage = () => {
   const [coinsP1, setCoinsP1] = useState(30);
   const [coinsP2, setCoinsP2] = useState(30);
 
-  const [p1Dices, setP1Dices] = useState([...INITIAL_DICES]);
-  const [p2Dices, setP2Dices] = useState([...INITIAL_DICES]);
+  // const [p1Dices, setP1Dices] = useState([...INITIAL_DICES]);
+  // const [p2Dices, setP2Dices] = useState([...INITIAL_DICES]);
 
-  const player1 = new Player('Max');
-  const player2 = new Player('Manus');
+  // const [p1Dices, setP1Dices] = useState(player1.dices);
+
+  // const [game, setGame] = useState({
+  //   round: undefined,
+  //   pot: 0,
+  //   winner: undefined,
+  // });
 
   /**
    * Kaster terning dersom cheked ikke er true
    */
-  const throwDice = (player: number) => {
-    if (player === 1) {
-      let newArr = p1Dices.map((item) => {
-        const value = item.checked
-          ? item.value
-          : Math.floor(Math.random() * 6 + 1);
+  // const throwDice = (player: number) => {
+  //   if (player === 1) {
+  //     let newArr = p1Dices.map((item) => {
+  //       const value = item.checked
+  //         ? item.value
+  //         : Math.floor(Math.random() * 6 + 1);
 
-        return { ...item, value };
-      });
-      setP1Dices(newArr);
-    }
+  //       return { ...item, value };
+  //     });
+  //     setP1Dices(newArr);
+  //   }
 
-    if (player === 2) {
-      let newArr = p2Dices.map((item) => {
-        const value = item.checked
-          ? item.value
-          : Math.floor(Math.random() * 6 + 1);
+  //   if (player === 2) {
+  //     let newArr = p2Dices.map((item) => {
+  //       const value = item.checked
+  //         ? item.value
+  //         : Math.floor(Math.random() * 6 + 1);
 
-        return { ...item, value };
-      });
-      setP2Dices(newArr);
-    }
-  };
+  //       return { ...item, value };
+  //     });
+  //     setP2Dices(newArr);
+  //   }
+  // };
 
   /**
    * Markerer en terning som ikke skal kastes på nytt
    */
-  const checkDice = (index: number, player: number) => {
-    if (player === 1) {
-      let newArr = p1Dices.map((item, i) => {
-        if (index === i) {
-          return { ...item, checked: !p1Dices[index].checked };
-        } else {
-          return item;
-        }
-      });
-      setP1Dices(newArr);
-    }
+  // const checkDice = (index: number, player: number) => {
+  //   if (player === 1) {
+  //     let newArr = p1Dices.map((item, i) => {
+  //       if (index === i) {
+  //         return { ...item, checked: !p1Dices[index].checked };
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setP1Dices(newArr);
+  //   }
 
-    if (player === 2) {
-      let newArr = p2Dices.map((item, i) => {
-        if (index === i) {
-          return { ...item, checked: !p2Dices[index].checked };
-        } else {
-          return item;
-        }
-      });
-      setP2Dices(newArr);
-    }
+  //   if (player === 2) {
+  //     let newArr = p2Dices.map((item, i) => {
+  //       if (index === i) {
+  //         return { ...item, checked: !p2Dices[index].checked };
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setP2Dices(newArr);
+  //   }
+  // };
+
+  const getScore = (result: any) => {
+    console.log(result);
   };
+
+  // const startGame = () => {
+  //   setGame((prevState) => {
+  //     return { ...prevState, round: 1 };
+  //   });
+  // };
 
   return (
     <div>
@@ -104,17 +91,23 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
+        {/* {game.round && <h2>Runde {game.round}</h2>}
+        <p>Pot: {game.pot}</p>
         <section>
           <h2>{player1.name}</h2>
-          <p>evCoin: {coinsP1}</p>
-          {p1Dices.map((dice, index) => (
+          <p>evCoin: {player1.coins}</p>
+          {/* {p1Dices.map((dice, index) => (
             <button onClick={() => checkDice(index, 1)} key={dice.id}>
               {dice.value}
             </button>
-          ))}
-          <button onClick={() => throwDice(1)}>Kast terninger</button>
-        </section>
-        <section>
+          ))} */}
+        {/* {player1.dices.map((dice: any, index: number) => (
+            <button key={dice.id}>{dice.value}</button>
+          ))} */}
+        {/* <button onClick={() => player1.throwDice()}>Kast terninger</button> */}
+        {/* <button onClick={() => throwDice(1)}>Kast terninger</button> */}
+        {/* </section> */}
+        {/* <section>
           <h2>{player2.name}</h2>
           <p>evCoin: {coinsP2}</p>
           {p2Dices.map((dice, index) => (
@@ -123,7 +116,10 @@ const Home: NextPage = () => {
             </button>
           ))}
           <button onClick={() => throwDice(2)}>Kast terninger</button>
-        </section>
+        </section> */}
+        {/* <button onClick={() => startGame()}>Start spill</button> */}
+        <Player name='Ola' />
+        <Player name='Kari' />
       </main>
     </div>
   );
