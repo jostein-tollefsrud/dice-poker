@@ -3,6 +3,7 @@ import { getResult } from '../lib/getResult';
 
 type PlayerProps = {
   name: string;
+  coins: number;
 };
 
 interface PointsProps {
@@ -38,10 +39,9 @@ const INITIAL_DICES = [
   },
 ];
 
-const Player = ({ name }: PlayerProps) => {
+const Player = ({ name, coins }: PlayerProps) => {
   const [dices, setDices] = useState([...INITIAL_DICES]);
   const [rolls, setRolls] = useState(0);
-  const [coins, setCoins] = useState(30);
   const [points, setPoints] = useState<PointsProps>({ point: 0 });
 
   const throwDice = () => {
@@ -78,21 +78,24 @@ const Player = ({ name }: PlayerProps) => {
   };
 
   return (
-    <section>
+    <section className='player'>
       <h2>{name}</h2>
       <p>evCoin: {coins}</p>
       {points.point > 0 && <p>{points.name}</p>}
 
-      {dices.map((dice: any, index: number) => (
-        <button
-          key={dice.id}
-          onClick={() => holdDice(index)}
-          style={{ borderColor: dice.hold ? 'red' : 'black' }}
-        >
-          {dice.value}
-        </button>
-      ))}
-      <button onClick={() => throwDice()} disabled={rolls >= 2}>
+      <div className='dices'>
+        {dices.map((dice: any, index: number) => (
+          <button
+            key={dice.id}
+            onClick={() => holdDice(index)}
+            // style={{ borderColor: dice.hold ? 'red' : 'black' }}
+            className={`dice ${dice.hold && 'select'}`}
+          >
+            {dice.value}
+          </button>
+        ))}
+      </div>
+      <button className='btn' onClick={() => throwDice()} disabled={rolls >= 2}>
         Kast terninger
       </button>
     </section>
