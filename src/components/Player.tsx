@@ -1,92 +1,100 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getResult } from '../lib/getResult';
 
 type PlayerProps = {
   name: string;
 };
 
+interface PointsProps {
+  name?: string;
+  point: number;
+}
+
 const INITIAL_DICES = [
   {
     id: 0,
     value: 0,
-    checked: false,
+    hold: false,
   },
   {
     id: 1,
     value: 0,
-    checked: false,
+    hold: false,
   },
   {
     id: 2,
     value: 0,
-    checked: false,
+    hold: false,
   },
   {
     id: 3,
     value: 0,
-    checked: false,
+    hold: false,
   },
   {
     id: 4,
     value: 0,
-    checked: false,
+    hold: false,
   },
 ];
 
 const Player = ({ name }: PlayerProps) => {
   const [dices, setDices] = useState([...INITIAL_DICES]);
-
-  let coins = 30;
+  const [rolls, setRolls] = useState(0);
+  const [coins, setCoins] = useState(30);
+  const [points, setPoints] = useState<PointsProps>({ point: 0 });
 
   const throwDice = () => {
-    let newArr = dices.map((item) => {
-      const value = item.checked
-        ? item.value
-        : Math.floor(Math.random() * 6 + 1);
+    if (rolls < 2) {
+      let newArr = dices.map((item) => {
+        const value = item.hold
+          ? item.value
+          : Math.floor(Math.random() * 6 + 1);
 
-      return { ...item, value };
+        return { ...item, value };
+      });
+      setDices(newArr);
+      setRolls((prevState) => prevState + 1);
+    }
+  };
+
+  useEffect(() => {
+    const result = getResult(dices);
+    setPoints(result);
+  }, [dices]);
+
+  /**
+   * Markerer en terning som ikke skal kastes på nytt
+   */
+  const holdDice = (index: number) => {
+    let newArr = dices.map((item, i) => {
+      if (index === i) {
+        return { ...item, hold: !dices[index].hold };
+      } else {
+        return item;
+      }
     });
     setDices(newArr);
   };
-
-  const getResult = (dices: any) => {
-    let values: number[] = [];
-
-    dices.forEach((dice: any) => {
-      values.push(dice.value);
-    });
-
-    values.sort();
-
-    // values = [2, 3, 4, 5, 6];
-
-    const first = values[0];
-    const smallStraight =
-      values.every((f, index) => f - first === index) && values[4] === 5;
-
-    const largeStraight =
-      values.every((f, index) => f - first === index) && values[4] === 6;
-
-    return (
-      (smallStraight && 'small straight') || (largeStraight && 'large straight')
-    );
-  };
-  const test = getResult(dices);
-  console.log(test);
 
   return (
     <section>
       <h2>{name}</h2>
       <p>evCoin: {coins}</p>
-      {/* {p1Dices.map((dice, index) => (
-            <button onClick={() => checkDice(index, 1)} key={dice.id}>
-              {dice.value}
-            </button>
-          ))} */}
+      {points.point > 0 && <p>{points.name}</p>}
+
       {dices.map((dice: any, index: number) => (
-        <button key={dice.id}>{dice.value}</button>
+        <button
+          key={dice.id}
+          onClick={() => holdDice(index)}
+          style={{ borderColor: dice.hold ? 'red' : 'black' }}
+        >
+          {dice.value}
+        </button>
       ))}
-      <button onClick={() => throwDice()}>Kast terninger</button>
-      {/* <button onClick={() => throwDice(1)}>Kast terninger</button> */}
+      <button onClick={() => throwDice()} disabled={rolls >= 2}>
+        Kast terninger
+      </button>
     </section>
   );
 };
