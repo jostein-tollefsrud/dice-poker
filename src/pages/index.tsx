@@ -58,9 +58,23 @@ const Home: NextPage = () => {
 
   const startGame = () => {
     setRound(1);
-    // setPot(2);
-    // setP1Coins(29);
-    // setP2Coins(29);
+    setPot(2);
+    setP1Coins(29);
+    setP2Coins(29);
+  };
+
+  const setButtonDisabled = (player: number) => {
+    // let disabled: boolean;
+
+    // if (player === 1) {
+    //   return p1Rolls === 1;
+    // }
+
+    // if (player === 2) {
+    //   return p2Rolls === 1;
+    // }
+
+    return false;
   };
 
   const throwDiceP1 = () => {
@@ -104,11 +118,14 @@ const Home: NextPage = () => {
     if (p1Rolls === 2 && p2Rolls === 2) {
       if (p1Points.point > p2Points.point) {
         setWinner('Spiller 1 vant!');
+        setP1Coins((prevCoins) => prevCoins + pot);
       } else {
         setWinner('Spiller 2 vant!');
+        setP2Coins((prevCoins) => prevCoins + pot);
       }
+      setPot(0);
     }
-  }, [p1Dices, p2Dices, p1Points.point, p2Points.point, p1Rolls, p2Rolls]);
+  }, [p1Dices, p2Dices, p1Points.point, p2Points.point, p1Rolls, p2Rolls, pot]);
 
   const newRound = () => {
     setP1Rolls(0);
@@ -117,6 +134,9 @@ const Home: NextPage = () => {
     setP2Dices([...INITIAL_DICES]);
     setWinner('');
     setRound((prev) => prev + 1);
+    setPot(2);
+    setP1Coins((prev) => prev - 1);
+    setP2Coins((prev) => prev - 1);
   };
 
   /**
@@ -152,13 +172,17 @@ const Home: NextPage = () => {
       </Head>
 
       {round === 0 && (
-        <button className='btn' onClick={() => startGame()}>
-          Start spill
-        </button>
+        <section>
+          <h1>Dice Poker</h1>
+          <button className='btn' onClick={() => startGame()}>
+            Start spill
+          </button>
+        </section>
       )}
 
       {round > 0 && (
         <main>
+          <h1>Dice Poker</h1>
           <p>Runde: {round}</p>
           <p>Pot: {pot}</p>
 
@@ -182,7 +206,7 @@ const Home: NextPage = () => {
             <button
               className='btn'
               onClick={() => throwDiceP1()}
-              disabled={p1Rolls >= 2}
+              disabled={setButtonDisabled(1)}
             >
               Kast terninger
             </button>
@@ -208,14 +232,16 @@ const Home: NextPage = () => {
             <button
               className='btn'
               onClick={() => throwDiceP2()}
-              disabled={p2Rolls >= 2}
+              disabled={setButtonDisabled(2)}
             >
               Kast terninger
             </button>
           </section>
           <p>{winner}</p>
           {p1Rolls === 2 && p2Rolls === 2 && (
-            <button onClick={() => newRound()}>Ny runde</button>
+            <button className='btn' onClick={() => newRound()}>
+              Ny runde
+            </button>
           )}
         </main>
       )}
