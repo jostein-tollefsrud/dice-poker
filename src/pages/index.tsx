@@ -55,6 +55,10 @@ const Home: NextPage = () => {
   const [pot, setPot] = useState(0);
   const [round, setRound] = useState(0);
   const [winner, setWinner] = useState('');
+  const [folded, setFolded] = useState(false);
+  const [raise, setRaise] = useState(false);
+
+  const [raiseCange, setRaiseCange] = useState(0);
 
   const startGame = () => {
     setRound(1);
@@ -66,15 +70,17 @@ const Home: NextPage = () => {
   const setButtonDisabled = (player: number) => {
     // let disabled: boolean;
 
-    // if (player === 1) {
-    //   return p1Rolls === 1;
-    // }
+    if (player === 1) {
+      return p1Rolls === 1;
+    }
 
-    // if (player === 2) {
-    //   return p2Rolls === 1;
-    // }
+    if (player === 2) {
+      return p2Rolls === 1;
+    }
 
-    return false;
+    if (p1Bid === p2Bid) return true;
+
+    // return false;
   };
 
   const throwDiceP1 = () => {
@@ -115,7 +121,7 @@ const Home: NextPage = () => {
     /**
      * Sjekk hvem som har høyest score
      */
-    if (p1Rolls === 2 && p2Rolls === 2) {
+    if (p1Rolls === 2 && p2Rolls === 2 && !folded) {
       if (p1Points.point > p2Points.point) {
         setWinner('Spiller 1 vant!');
         setP1Coins((prevCoins) => prevCoins + pot);
@@ -125,7 +131,16 @@ const Home: NextPage = () => {
       }
       setPot(0);
     }
-  }, [p1Dices, p2Dices, p1Points.point, p2Points.point, p1Rolls, p2Rolls, pot]);
+  }, [
+    p1Dices,
+    p2Dices,
+    p1Points.point,
+    p2Points.point,
+    p1Rolls,
+    p2Rolls,
+    pot,
+    folded,
+  ]);
 
   const newRound = () => {
     setP1Rolls(0);
@@ -137,6 +152,7 @@ const Home: NextPage = () => {
     setPot(2);
     setP1Coins((prev) => prev - 1);
     setP2Coins((prev) => prev - 1);
+    setFolded(false);
   };
 
   /**
@@ -162,6 +178,39 @@ const Home: NextPage = () => {
       }
     });
     setP2Dices(newArr);
+  };
+
+  const handleRaise = (player: number) => {
+    if (player == 1) {
+      setP1Coins((prev) => prev - raiseCange);
+      setP1Bid(raiseCange);
+    }
+
+    if (player == 2) {
+      setP2Coins((prev) => prev - raiseCange);
+      setP2Bid(raiseCange);
+    }
+
+    setPot((prev) => prev + raiseCange);
+    setRaise(false);
+    setRaiseCange(0);
+  };
+
+  const handleCall = (player: number) => {};
+
+  const handleFold = (player: number) => {
+    if (player === 1) {
+      setWinner('Spiller 2 vant!');
+      setP2Coins((prevCoins) => prevCoins + pot);
+    }
+    if (player === 2) {
+      setWinner('Spiller 1 vant!');
+      setP1Coins((prevCoins) => prevCoins + pot);
+    }
+    setPot(0);
+    setP1Rolls(2);
+    setP2Rolls(2);
+    setFolded(true);
   };
 
   return (
@@ -203,6 +252,20 @@ const Home: NextPage = () => {
                 </button>
               ))}
             </div>
+            {p1Rolls == 1 && p2Rolls == 1 && (
+              <div>
+                <button className='btn' onClick={() => setRaise(true)}>
+                  Høyne
+                </button>
+                <button className='btn' onClick={() => handleCall(1)}>
+                  Syne
+                </button>
+                <button className='btn' onClick={() => handleFold(1)}>
+                  Folde
+                </button>
+              </div>
+            )}
+
             <button
               className='btn'
               onClick={() => throwDiceP1()}
@@ -229,6 +292,19 @@ const Home: NextPage = () => {
                 </button>
               ))}
             </div>
+            {p1Rolls == 1 && p2Rolls == 1 && (
+              <div>
+                <button className='btn' onClick={() => setRaise(true)}>
+                  Høyne
+                </button>
+                <button className='btn' onClick={() => handleCall(2)}>
+                  Syne
+                </button>
+                <button className='btn' onClick={() => handleFold(2)}>
+                  Folde
+                </button>
+              </div>
+            )}
             <button
               className='btn'
               onClick={() => throwDiceP2()}
@@ -237,11 +313,33 @@ const Home: NextPage = () => {
               Kast terninger
             </button>
           </section>
-          <p>{winner}</p>
           {p1Rolls === 2 && p2Rolls === 2 && (
-            <button className='btn' onClick={() => newRound()}>
-              Ny runde
-            </button>
+            <section className='popup'>
+              <div className='popup__inner'>
+                <p>{winner}</p>
+
+                <button className='btn' onClick={() => newRound()}>
+                  Ny runde
+                </button>
+              </div>
+            </section>
+          )}
+
+          {raise && (
+            <section className='popup'>
+              <div className='popup__inner'>
+                <label htmlFor='raise'>Høyne med</label>
+                <input
+                  onChange={(e) => setRaiseCange(+e.target.value)}
+                  type='number'
+                  name='raise'
+                  id='raise'
+                />
+                <button className='btn' onClick={() => handleRaise(1)}>
+                  Høyne
+                </button>
+              </div>
+            </section>
           )}
         </main>
       )}
